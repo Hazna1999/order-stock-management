@@ -117,3 +117,9 @@ def test_sales_cannot_adjust_stock(sales_client, product):
         {"change_quantity": 1, "reason": "x"}, format="json",
     )
     assert response.status_code == 403
+
+def test_low_stock_report(admin_client, product):
+    admin_client.post(URL, payload(sku="L-1", stock_quantity=2, reorder_level=5), format="json")
+    response = admin_client.get(f"{URL}low-stock/")
+    assert response.status_code == 200
+    assert [p["sku"] for p in response.data["results"]] == ["L-1"]

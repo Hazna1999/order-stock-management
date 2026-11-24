@@ -3,6 +3,7 @@ from django.shortcuts import render
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from django.db.models import F
 
 from common.permissions import (
     ADMIN, INVENTORY, IsAdmin, IsAdminOrInventory, IsAnyStaffRole, user_roles,
@@ -70,3 +71,9 @@ class ProductViewSet(
             .values_list("category", flat=True).distinct().order_by("category")
         )
         return Response(list(names))
+
+    @action(detail=False, methods=["get"], url_path="low-stock")
+    def low_stock(self, request):
+        qs = self.get_queryset().filter(stock_quantity__lte=F("reorder_level"))
+        page = self.paginate_queryset(qs)
+        return self.get_paginated_response(self.get_serializer(page, many=True).data)

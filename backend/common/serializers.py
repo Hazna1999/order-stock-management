@@ -1,5 +1,6 @@
 from django.contrib.auth.models import Group, User
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 
 from .permissions import ALL_ROLES
 
@@ -13,7 +14,8 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "username", "password", "role", "roles", "is_active"]
         read_only_fields = ["id"]
-
+    
+    @extend_schema_field(serializers.ListField(child=serializers.CharField()))
     def get_roles(self, user):
         return sorted(g.name for g in user.groups.all())
 

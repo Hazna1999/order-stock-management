@@ -3,8 +3,10 @@ import Layout from "./components/Layout";
 import Login from "./pages/Login";
 import Products from "./pages/Products";
 import Customers from "./pages/Customers";
-
-const Placeholder = ({ name }: { name: string }) => <div className="text-gray-600">{name} page coming next</div>;
+import Orders from "./pages/Orders";
+import OrderBuilder from "./pages/OrderBuilder";
+import OrderDetail from "./pages/OrderDetail";
+import Users from "./pages/Users";
 
 export default function App() {
   return (
@@ -13,7 +15,10 @@ export default function App() {
       <Route element={<Layout />}>
         <Route path="/products" element={<Products />} />
         <Route path="/customers" element={<Customers />} />
-        <Route path="/orders" element={<Placeholder name="Orders" />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/orders/new" element={<OrderBuilder />} />
+        <Route path="/orders/:id" element={<OrderDetail />} />
+        <Route path="/users" element={<Users />} />
       </Route>
       <Route path="*" element={<Navigate to="/products" replace />} />
     </Routes>

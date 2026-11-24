@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import type { OrderStatus } from "../types";
+
 
 export function Skeleton({ rows = 5 }: { rows?: number }) {
   return (
@@ -45,4 +47,12 @@ export function Modal({ title, onClose, children }: { title: string; onClose: ()
       </div>
     </div>
   );
+}
+
+const STATUS_TONE: Record<OrderStatus, "gray" | "blue" | "amber" | "green" | "red"> = {
+  DRAFT: "gray", CONFIRMED: "blue", SHIPPED: "amber", DELIVERED: "green", CANCELLED: "red",
+};
+
+export function StatusBadge({ status }: { status: OrderStatus }) {
+  return <Badge tone={STATUS_TONE[status]}>{status}</Badge>;
 }

@@ -18,6 +18,7 @@ export default function Layout() {
             <NavLink to="/products" className={link}>Products</NavLink>
             {hasRole("Admin", "Sales User") && <NavLink to="/customers" className={link}>Customers</NavLink>}
             <NavLink to="/orders" className={link}>Orders</NavLink>
+            {hasRole("Admin") && <NavLink to="/users" className={link}>Users</NavLink>}
           </nav>
           <div className="ml-auto flex items-center gap-3 text-sm">
             <span>{user.username} <span className="rounded bg-white/20 px-2 py-0.5 text-xs">{user.roles.join(", ") || "no role"}</span></span>

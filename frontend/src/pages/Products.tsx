@@ -23,6 +23,10 @@ export default function Products() {
     queryFn: async () => (await api.get<Page<Product>>("/products/", { params })).data,
     placeholderData: keepPreviousData,
   });
+  const { data: categories } = useQuery({
+    queryKey: ["product-categories"],
+    queryFn: async () => (await api.get<string[]>("/products/categories/")).data,
+  });
 
   const deactivate = useMutation({
     mutationFn: (id: number) => api.post(`/products/${id}/deactivate/`),
@@ -39,8 +43,11 @@ export default function Products() {
         <h1 className="mr-auto text-lg font-semibold">Products</h1>
         <input className="rounded border p-2 text-sm" placeholder="Search name or SKU" value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }} />
-        <input className="rounded border p-2 text-sm" placeholder="Category" value={category}
-          onChange={(e) => { setCategory(e.target.value); setPage(1); }} />
+        <select className="rounded border p-2 text-sm" value={category}
+          onChange={(e) => { setCategory(e.target.value); setPage(1); }}>
+          <option value="">All categories</option>
+          {categories?.map((c) => <option key={c} value={c}>{c}</option>)}
+        </select>
         {isAdmin && (
           <select className="rounded border p-2 text-sm" value={active}
             onChange={(e) => { setActive(e.target.value); setPage(1); }}>

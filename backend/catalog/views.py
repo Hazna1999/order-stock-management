@@ -62,3 +62,11 @@ class ProductViewSet(
             data.validated_data["reason"], request.user,
         )
         return Response(StockAdjustmentSerializer(adjustment).data, status=201)
+
+    @action(detail=False, methods=["get"])
+    def categories(self, request):
+        names = (
+            self.get_queryset().exclude(category="")
+            .values_list("category", flat=True).distinct().order_by("category")
+        )
+        return Response(list(names))

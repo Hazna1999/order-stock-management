@@ -62,4 +62,4 @@ def custom_exception_handler(exc, context):
             "details": [],
         }
     response.data = body
-    return respons
+    return response

@@ -33,7 +33,13 @@ class ProductSerializer(serializers.ModelSerializer):
     def validate_name(self, value):
         return value.strip()
 
-
+    def update(self, instance, validated_data):
+        new_stock = validated_data.get("stock_quantity", instance.stock_quantity)
+        if new_stock != instance.stock_quantity:
+            raise serializers.ValidationError(
+                {"stock_quantity": "Use the adjust-stock action to change stock."}
+            )
+        return super().update(instance, validated_data)
 class StockAdjustmentInputSerializer(serializers.Serializer):
     change_quantity = serializers.IntegerField()
     reason = serializers.CharField(max_length=255)
@@ -54,4 +60,3 @@ class StockAdjustmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = StockAdjustment
         fields = "__all__"
-        

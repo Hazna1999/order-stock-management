@@ -5,6 +5,7 @@ import { api } from "../api/client";
 import { toastError } from "../api/errors";
 import { Badge, Modal, Pager, Skeleton } from "../components/ui";
 import type { Customer, Page } from "../types";
+import { useDebounce } from "../hooks/useDebounce";
 
 export default function Customers() {
   const qc = useQueryClient();
@@ -12,9 +13,10 @@ export default function Customers() {
   const [page, setPage] = useState(1);
   const [editing, setEditing] = useState<Customer | "new" | null>(null);
 
+  const debouncedSearch = useDebounce(search);
   const { data, isLoading } = useQuery({
-    queryKey: ["customers", search, page],
-    queryFn: async () => (await api.get<Page<Customer>>("/customers/", { params: { search, page } })).data,
+    queryKey: ["customers", debouncedSearch, page],
+    queryFn: async () => (await api.get<Page<Customer>>("/customers/", { params: { search: debouncedSearch, page } })).data,
     placeholderData: keepPreviousData,
   });
 

@@ -5,6 +5,7 @@ import { api } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
 import { Pager, Skeleton, StatusBadge } from "../components/ui";
 import type { Order, Page } from "../types";
+import { useDebounce } from "../hooks/useDebounce";
 
 const STATUSES = ["DRAFT", "CONFIRMED", "SHIPPED", "DELIVERED", "CANCELLED"];
 
@@ -16,8 +17,8 @@ export default function Orders() {
   const [to, setTo] = useState("");
   const [page, setPage] = useState(1);
 
-  const params = { search, status, date_from: from, date_to: to, page };
-  const { data, isLoading } = useQuery({
+  const debouncedSearch = useDebounce(search);
+  const params = { search: debouncedSearch, status, date_from: from, date_to: to, page };  const { data, isLoading } = useQuery({
     queryKey: ["orders", params],
     queryFn: async () => (await api.get<Page<Order>>("/orders/", { params })).data,
     placeholderData: keepPreviousData,

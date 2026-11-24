@@ -6,6 +6,7 @@ import { toastError } from "../api/errors";
 import { useAuth } from "../auth/AuthContext";
 import { Badge, Modal, Pager, Skeleton } from "../components/ui";
 import type { Page, Product } from "../types";
+import { useDebounce } from "../hooks/useDebounce";
 
 export default function Products() {
   const { hasRole } = useAuth();
@@ -17,8 +18,8 @@ export default function Products() {
   const [adjusting, setAdjusting] = useState<Product | null>(null);
   const [editing, setEditing] = useState<Product | "new" | null>(null);
 
-  const params = { search, category, is_active: active, page };
-  const { data, isLoading } = useQuery({
+  const debouncedSearch = useDebounce(search);
+  const params = { search: debouncedSearch, category, is_active: active, page };  const { data, isLoading } = useQuery({
     queryKey: ["products", params],
     queryFn: async () => (await api.get<Page<Product>>("/products/", { params })).data,
     placeholderData: keepPreviousData,
